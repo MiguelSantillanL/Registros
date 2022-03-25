@@ -9,6 +9,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.Buffer;
+
 //import java.lang.ref.PhantomReference;
 
 public class MainActivity extends AppCompatActivity {
@@ -112,7 +120,7 @@ public class MainActivity extends AppCompatActivity {
         String aux;
         Float calif;
 
-        UDA.setId(16);
+        UDA.setId(ListaDeReg.getNunElem()+1);
 
         aux = et_NombreUDA.getText().toString();
         UDA.setNombre(aux);
@@ -179,13 +187,138 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn_Anterior(View view){
+        Nodo nodoAux;
+        registroUDA UDA;
+        if( ListaDeReg.getNodoEnPantalla()!=null ){//si existe un nodo en pantalla
+            //obtener un nodo en panalla
+            nodoAux = ListaDeReg.getNodoEnPantalla();
+            //verificamos si eciste un nodo siguiente
+            if (nodoAux.getPrev()!=null){//si hay un nodo en pantalla
+                //asignar el nodo siguiente como el nodo en pantlla
+                nodoAux = nodoAux.getPrev();
+                ListaDeReg.setNodoEnPantalla(nodoAux);
+                //Obtener la uda correspondiente
+                UDA = nodoAux.getUDA();
+                if ( nodoAux!=null ) { //verificar que la lista no esta vacia
+                    ListaDeReg.setNodoEnPantalla(nodoAux);
+                    UDA = nodoAux.getUDA();
 
-    }
+                    tv_NumReg.setText(String.valueOf(UDA.getId()));
+
+                    et_NombreUDA.setText(UDA.getNombre());
+                    et_Profesor.setText(UDA.getProfesor());
+                    et_Calif.setText(String.valueOf(UDA.getCalFinal()));
+                    et_Sem.setText(String.valueOf(UDA.getSem()));
+
+                    if (UDA.getAprobado())
+                        rb_Aprobada.setChecked(true);
+                    else
+                        rb_NoAprobada.setChecked(true);
+
+                    if (UDA.getObligatoria())
+                        rb_Ob.setChecked(true);
+                    else
+                        rb_Op.setChecked(true);
+
+                    if (UDA.getNumOp() == 1)
+                        rb_1a.setChecked(true);
+                    else if (UDA.getNumOp() == 2)
+                        rb_2a.setChecked(true);
+                    else if (UDA.getNumOp() == 3)
+                        rb_3a.setChecked(true);
+                }
+
+            }
+
+        }
+        else{ //No hay nodo en pantalla
+            nodoAux = ListaDeReg.getInicio();
+            if ( nodoAux!=null ) { //verificar que la lista no esta vacia
+                ListaDeReg.setNodoEnPantalla(nodoAux);
+                UDA = nodoAux.getUDA();
+
+                tv_NumReg.setText(String.valueOf( UDA.getId() ));
+
+                et_NombreUDA.setText(UDA.getNombre());
+                et_Profesor.setText(UDA.getProfesor());
+                et_Calif.setText(String.valueOf(UDA.getCalFinal()));
+                et_Sem.setText(String.valueOf(UDA.getSem()));
+
+                if ( UDA.getAprobado() )
+                    rb_Aprobada.setChecked(true);
+                else
+                    rb_NoAprobada.setChecked(true);
+
+
+                if (UDA.getObligatoria())
+                    rb_Ob.setChecked(true);
+                else
+                    rb_Op.setChecked(true);
+
+                if (UDA.getNumOp() == 1)
+                    rb_1a.setChecked(true);
+                else if (UDA.getNumOp() == 2)
+                    rb_2a.setChecked(true);
+                else if (UDA.getNumOp() == 3)
+                    rb_3a.setChecked(true);
+
+            }
+            else{ //lista vacia
+                et_NombreUDA.setText("Sin registros");
+                et_Profesor.setText("Sin registros");
+                et_Sem.setText("S/R");
+                et_Calif.setText("S/R");
+            }
+        }
+
+
+
+    }//fin btn_anteriro
 
     public void btn_Siguiente(View view){
         Nodo nodoAux;
         registroUDA UDA;
-        if( ListaDeReg.getNodoEnPantalla()!=null ){
+        if( ListaDeReg.getNodoEnPantalla()!=null ){//si existe un nodo en pantalla
+            //obtener un nodo en panalla
+            nodoAux = ListaDeReg.getNodoEnPantalla();
+            //verificamos si eciste un nodo siguiente
+            if (nodoAux.getSig()!=null){//si hay un nodo en pantalla
+                //asignar el nodo siguiente como el nodo en pantlla
+                nodoAux = nodoAux.getSig();
+                ListaDeReg.setNodoEnPantalla(nodoAux);
+                //Obtener la uda correspondiente
+                UDA = nodoAux.getUDA();
+                if ( nodoAux!=null ) { //verificar que la lista no esta vacia
+                    ListaDeReg.setNodoEnPantalla(nodoAux);
+                    UDA = nodoAux.getUDA();
+
+                    tv_NumReg.setText(String.valueOf(UDA.getId()));
+
+                    et_NombreUDA.setText(UDA.getNombre());
+                    et_Profesor.setText(UDA.getProfesor());
+                    et_Calif.setText(String.valueOf(UDA.getCalFinal()));
+                    et_Sem.setText(String.valueOf(UDA.getSem()));
+
+                    if (UDA.getAprobado())
+                        rb_Aprobada.setChecked(true);
+                    else
+                        rb_NoAprobada.setChecked(true);
+
+
+                    if (UDA.getObligatoria())
+                        rb_Ob.setChecked(true);
+                    else
+                        rb_Op.setChecked(true);
+
+                    if (UDA.getNumOp() == 1)
+                        rb_1a.setChecked(true);
+                    else if (UDA.getNumOp() == 2)
+                        rb_2a.setChecked(true);
+                    else if (UDA.getNumOp() == 3)
+                        rb_3a.setChecked(true);
+                }
+
+            }
 
         }
         else{ //No hay nodo en pantalla
@@ -229,7 +362,46 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-    }
+    }//fin btn_siguiente
+
+    public void btn_GuardarArchivo(View view){
+        String text;
+        registroUDA UDA;
+        Nodo aux;
+        int totalElementos;
+        try{ //Para crear un archivo de texto usamos el metodo openFileOutput, el cual nos regresa un objeto de clase FileOutputStream
+            FileOutputStream archivoSalida = openFileOutput("Registros.txt", MODE_PRIVATE);
+            //Para facilitar la escritura en el archivo de salida, utilizamos otra clase llamada OutputStreamWriter
+            OutputStreamWriter outputText = new OutputStreamWriter(archivoSalida);
+
+            aux = ListaDeReg.getInicio();
+            totalElementos = ListaDeReg.getNunElem();
+            text = String.valueOf(totalElementos);
+            outputText.write(text);
+
+            if (totalElementos!=0){
+                for (int i = 0 ; i<ListaDeReg.getNunElem() ; i++){
+                    UDA = aux.getUDA();
+                    //Mostrar loa dOS EN PANTALLA
+                    text = String.valueOf(UDA.getId());             outputText.write(text + "\n"); //Escribir el texto en el archivo
+                    text = UDA.getNombre();                         outputText.write(text + "\n"); //Escribir el texto en el archivo
+                    text = UDA.getProfesor();                       outputText.write(text + "\n"); //Escribir el texto en el archivo
+                    text = String.valueOf( UDA.getCalFinal() );     outputText.write(text + "\n"); //Escribir el texto en el archivo
+                    text = String.valueOf( UDA.getSem() );          outputText.write(text + "\n"); //Escribir el texto en el archivo
+                    text = String.valueOf( UDA.getAprobado() );     outputText.write(text + "\n"); //Escribir el texto en el archivo
+                    text = String.valueOf( UDA.getObligatoria() );  outputText.write(text + "\n"); //Escribir el texto en el archivo
+                    text = String.valueOf( UDA.getNumOp() );        outputText.write(text + "\n"); //Escribir el texto en el archivo
+                }
+            }
+
+            //Una vez que ya no requerimos escribir, cerramos el archivo
+            outputText.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+            System.out.println("Ocurrio una EXEPCION");
+        }
+    }//fin btm:guardar_archivo
 
 
 } //fin de la clase MAIN_ACTIVITY
@@ -429,4 +601,4 @@ class Lista{
         }
         this.nunElem++;
     }
-}//fin de la clase Lista
+} //fin de la clase Lista
